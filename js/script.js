@@ -25,7 +25,7 @@ const startButton = document.querySelector('.start-button'),
    endButton = document.querySelector('.end-button'),
    total = document.querySelector('.total'),
    fastRange = document.querySelector('.fast-range'),
-   totalPriceSum = document.querySelector('.total_price_sum');
+   totalPriceSum = document.querySelector('.total_price__sum');
 
 function showElem(elem) {
    elem.style.display = 'block';
@@ -38,7 +38,8 @@ function hideElem(elem) {
 function priceCalculation(elem) {
 
    let result = 0,
-      index = 0;
+      index = 0,
+      options = [];
 
    if (elem.name === 'whichSite') {
       for (const item of formCalculate.elements) {
@@ -52,8 +53,26 @@ function priceCalculation(elem) {
    for (const item of formCalculate.elements) {
       if (item.name === 'whichSite' && item.checked) {
          index = DATA.whichSite.indexOf(item.value);
+      } else if (item.classList.contains('calc-handler') && item.checked) {
+         options.push(item.value);
       }
    }
+
+   options.forEach(function (key) {
+      if (typeof (DATA[key]) === 'number') {
+         if (key === 'sendOrder') {
+            result += DATA[key];
+         } else {
+            result += DATA.price[index] * DATA[key] / 100;
+         }
+      } else {
+         if (key === 'desktopTemplates') {
+            result += DATA.price[index] * DATA[key][index] / 100;
+         } else {
+            result += DATA[key][index];
+         }
+      }
+   });
 
    result += DATA.price[index];
 
